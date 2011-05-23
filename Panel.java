@@ -52,6 +52,9 @@
 			}
 
          if (human) {
+			 	if (checkThreeInARow()) {
+					return false;
+				}
             int actX=0;
             int actY=0;
          
@@ -83,7 +86,7 @@
                   break;
             }
 
-				if (board[y][x]!=2) {
+				if (board[y][x]==0) {
 	            ImageIcon ico=new ImageIcon("x.png");
  	            graph.drawImage(ico.getImage(), actX, actY, 85, 85, null);
   	            repaint();
@@ -147,48 +150,67 @@
          	}
       }
 
-		void checkThreeInARow() {
+		boolean checkThreeInARow() {
+			boolean retVal=false;
+
 			if (board[0][0]==board[1][0]&& board[1][0]==board[2][0] && board[0][0]!=0) {
 				graph.setColor(Color.WHITE.darker());
 				for (int i=0; i<7; i++) {
 					graph.drawLine(70+i, 20, 70+i, 410);
 				}
-			} else if (board[0][1]==board[1][1]&& board[1][1]==board[2][1] && board[0][1]!=0) {
+				retVal=true;
+			}
+			if (board[0][1]==board[1][1]&& board[1][1]==board[2][1] && board[0][1]!=0) {
 				graph.setColor(Color.WHITE.darker());
 				for (int i=0; i<7; i++) {
 					graph.drawLine(195+i, 20, 195+i, 410);
 				}
-			} else if (board[0][2]==board[1][2]&& board[1][2]==board[2][2] && board[0][2]!=0) {
+				retVal=true;
+			}
+			if (board[0][2]==board[1][2]&& board[1][2]==board[2][2] && board[0][2]!=0) {
 				graph.setColor(Color.WHITE.darker());
 				for (int i=0; i<7; i++) {
 					graph.drawLine(330+i, 20, 330+i, 410);
 				}
-			} else if (board[0][0]==board[0][1]&& board[0][1]==board[0][2] && board[0][0]!=0) {
+				retVal=true;
+			}
+			if (board[0][0]==board[0][1]&& board[0][1]==board[0][2] && board[0][0]!=0) {
 				graph.setColor(Color.WHITE.darker());
 				for (int i=0; i<7; i++) {
 					graph.drawLine(20, 70+i, 390, 70+i);
 				}
-			} else if (board[1][0]==board[1][1]&& board[1][1]==board[1][2] && board[1][0]!=0) {
+				retVal=true;
+			}
+			if (board[1][0]==board[1][1]&& board[1][1]==board[1][2] && board[1][0]!=0) {
 				graph.setColor(Color.WHITE.darker());
 				for (int i=0; i<7; i++) {
 					graph.drawLine(20, 195+i, 390, 195+i);
 				}
-			} else if (board[2][0]==board[2][1]&& board[2][1]==board[2][2] && board[2][0]!=0) {
+				retVal=true;
+			}
+			if (board[2][0]==board[2][1]&& board[2][1]==board[2][2] && board[2][0]!=0) {
 				graph.setColor(Color.WHITE.darker());
 				for (int i=0; i<7; i++) {
 					graph.drawLine(20, 330+i, 390, 330+i);
 				}
-			} else if (board[0][0]==board[1][1]&& board[1][1]==board[2][2] && board[0][0]!=0) {
+				retVal=true;
+			}
+			if (board[0][0]==board[1][1]&& board[1][1]==board[2][2] && board[0][0]!=0) {
 				graph.setColor(Color.WHITE.darker());
 				for (int i=0; i<7; i++) {
 					graph.drawLine(20+i, 20, 390+i, 390);
 				}
-			} else if (board[0][2]==board[1][1]&& board[1][1]==board[2][0] && board[0][2]!=0) {
+				retVal=true;
+			}
+			if (board[0][2]==board[1][1]&& board[1][1]==board[2][0] && board[0][2]!=0) {
 				graph.setColor(Color.WHITE.darker());
 				for (int i=0; i<7; i++) {
 					graph.drawLine(370+i, 20, 20+i, 390);
 				}
+				retVal=true;
 			}
+
+			return retVal;
 		}
    
        int countTwoInARows(int piece) {
@@ -591,7 +613,7 @@
 
 				//System.out.println("Play at X: "+x+" Y:"+y);
          
-            if (playAt(x, y, isHuman) && x!=-1 && y!=-1) {
+            if (playAt(x, y, isHuman) && x!=-1 && y!=-1 && !checkThreeInARow() && countPieces()!=9) {
 	         	play(2);
  		        	drawRobotPlays();
 				}
