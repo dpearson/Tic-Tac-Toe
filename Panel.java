@@ -9,6 +9,7 @@
    import java.util.*;
 
 /**
+ * The actual gameplay view, and associated AI methods.
  *
  * @author David
  */
@@ -20,6 +21,9 @@
       public boolean isHuman;
       public boolean gameWon;
    
+      /**
+       * Default constructor for the view.
+       */
        public Panel() {
          image =  new BufferedImage(400, 425, BufferedImage.TYPE_INT_RGB);
          graph = image.getGraphics();
@@ -40,12 +44,26 @@
          isHuman=true;
          gameWon=false;
       }
-       @Override
-       public void paintComponent(Graphics g) {
+      
+      /**
+       * Paints the view.
+       * @param  g  the Graphics instance to paint to.
+       */
+      @Override
+      public void paintComponent(Graphics g) {
          g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
       }
    
-       public boolean playAt(int x, int y, boolean human) {
+      /**
+       * Plays a piece at the coordinates for either a human player (X) or the computer (O).
+       *
+       * @param  x  The x coordinate to play the piece at. 0<x<2.
+       * @param  y  The y coordinate to play the piece at. 0<y<2.
+       * @param  human  Whether or not the piece is an X.
+       *
+       * @return Success.
+       */
+      public boolean playAt(int x, int y, boolean human) {
 		 	//System.out.println("Val: "+board[2][2]);
 		 	if (x<0 || x>2 || y<0 || y>2) {
 				return false;
@@ -139,6 +157,9 @@
 			return true;
       }
 
+       /**
+        * Draws all of the computer's moves at once. Convience method for playAt(x,y,false) looped through the board.
+        */
        public void drawRobotPlays() {
             for (int i=0; i<board.length; i++) {
             	for (int j=0; j<board.length; j++) {
@@ -150,7 +171,13 @@
          	}
       }
 
-		boolean checkThreeInARow() {
+
+      /**
+       * Checks for any threes-in-a-row.
+       *
+       * @return true if there is a three-in-a-row.
+       */
+      boolean checkThreeInARow() {
 			boolean retVal=false;
 
 			if (board[0][0]==board[1][0]&& board[1][0]==board[2][0] && board[0][0]!=0) {
@@ -213,7 +240,14 @@
 			return retVal;
 		}
    
-       int countTwoInARows(int piece) {
+        /**
+         * Counts the number of two-in-a-rows for the given piece.
+         *
+         * @param  piece The piece (0 or 1) to count for.
+         *
+         * @return  The number of two-in-a-rows.
+         */
+        int countTwoInARows(int piece) {
          int count=0;
          if (board[0][0]==board[0][1] && board[0][0]==piece && board[0][2]==0) {
             count+=1;
@@ -265,7 +299,14 @@
          }
          return count;
       }
-   
+
+       /**
+        * Returns a winning move.
+        *
+        * @param  piece  the piece (0 or 1) to check for
+        *
+        * @return the square to play at to block/win.
+        */
        int[] checkCanWin(int piece) {
          if (board[0][0]==board[0][1] && board[0][0]==piece && board[0][2]==0) {
             return new int[] {0,2};
@@ -345,7 +386,13 @@
 			}
          return null;
       }
-   
+
+       /**
+        * Plays in the centre square if possible.
+        *
+        * @param  piece  the piece to play
+        * @return played in centre
+        */
        boolean playCenterIfPossible(int piece) {
          if (board[1][1]==0) {
             board[1][1]=piece;
@@ -353,7 +400,14 @@
          }
          return false;
       }
-   
+
+       /**
+        * Plays in the opposite corner if possible.
+        *
+        * @param  piece  the piece to play
+        *
+        * @return played in opposite corner
+        */
        boolean playOppositeCornerIfPossible(int piece) {
          int oppPiece=1;
          if (piece==1) {
@@ -377,8 +431,15 @@
          }
          return false;
       }
-   
-       boolean playCornerIfPossible(int piece) {
+
+        /**
+         * Plays in a corner if possible.
+         *
+         * @param  piece  the piece to play
+         *
+         * @return played in a corner
+         */
+        boolean playCornerIfPossible(int piece) {
          if (board[2][2]==0) {
             board[2][2]=piece;
             return true;
@@ -397,8 +458,15 @@
          }
          return false;
       }
-   
-       boolean playEdgeIfPossible(int piece) {
+
+        /**
+         * Plays on an edge if possible.
+         *
+         * @param  piece  the piece to play
+         *
+         * @return played on edge
+         */
+        boolean playEdgeIfPossible(int piece) {
          if (board[0][1]==0) {
             board[0][1]=piece;
             return true;

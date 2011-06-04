@@ -6,12 +6,14 @@ import javax.swing.JFrame;
 import java.awt.*;
 
 /**
+ * Runs the application.
  *
  * @author David
  */
 public class Main {
 
     /**
+     * Main method. Creates a window.
      * @param args the command line arguments
      */
     public static void main(String[] args) {
