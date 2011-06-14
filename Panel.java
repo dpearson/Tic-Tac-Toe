@@ -20,6 +20,8 @@
       public int[][] board; 
       public boolean isHuman;
       public boolean gameWon;
+
+		public int level;
    
       /**
        * Default constructor for the view.
@@ -43,6 +45,13 @@
          addMouseListener(new Mouse());
          isHuman=true;
          gameWon=false;
+
+			level=-1;
+
+			while (level<0 || level>2) {
+				level=Integer.parseInt(JOptionPane.showInputDialog("Enter difficulty from 0-2:"
+				));
+			}
       }
       
       /**
@@ -249,6 +258,9 @@
          */
         int countTwoInARows(int piece) {
          int count=0;
+			if (level<1 && Math.random()<0.5) {
+				return 0;
+			}
          if (board[0][0]==board[0][1] && board[0][0]==piece && board[0][2]==0) {
             count+=1;
          } 
@@ -394,6 +406,10 @@
         * @return played in centre
         */
        boolean playCenterIfPossible(int piece) {
+		 	if (level==0) {
+				return false;
+			}
+
          if (board[1][1]==0) {
             board[1][1]=piece;
             return true;
@@ -486,7 +502,14 @@
          return false;
       }
    
-       boolean forkIfPossible(int piece) {
+       /**
+		  * Creates a fork to win if possible.
+		  *
+		  * @param  piece  the piece to create a fork for.
+		  *
+		  * @return Success
+		  */
+		 boolean forkIfPossible(int piece) {
          for (int i=0; i<board.length; i++) {
             for (int j=0; j<3; j++) {
                if (board[i][j]==0) {
@@ -502,7 +525,18 @@
          return false;
       }
 
-       boolean blockForkIfPossible(int piece) {
+       /**
+		  * Blocks an opponents fork if possible.
+		  *
+		  * @param  piece  the piece to use to block.
+		  *
+		  * @return Success
+		  */
+		 boolean blockForkIfPossible(int piece) {
+		 	if (level<1) {
+				return false;
+			}
+
 		 	int oppPiece=1;
 			if (oppPiece==piece) {
 				piece=2;
@@ -523,7 +557,17 @@
          return false;
       }
 
+		/**
+		 * Blocks a double fork if possible.
+		 *
+		 * @param  piece  the piece to use to block.
+		 *
+		 * @return Success
+		 */
 		boolean blockDoubleForkIfPossible(int piece) {
+			if (level<2) {
+				return false;
+			}
 		 	int oppPiece=1;
 			if (oppPiece==piece) {
 				piece=2;
@@ -578,7 +622,17 @@
 			return false;
 		}
 
+		/**
+		 * Plays a turn ahead to block a potential setup of of a double fork.
+		 *
+		 * @param  piece  the piece to use to block.
+		 *
+		 * @return Success
+		 */
 		boolean blockDoubleForkInAdvanceIfPossible(int piece) {
+			if (level<2) {
+				return false;
+			}
 		 	int oppPiece=1;
 			if (oppPiece==piece) {
 				piece=2;
@@ -599,6 +653,11 @@
          return false;
 		}
 
+		/**
+		 * Counts the number of pieces that have been played by both players.
+		 *
+		 * @return the number of pieces
+		 */
 		int countPieces() {
 			int count=0;
 			for(int i=0; i<board.length; i++) {
@@ -612,7 +671,12 @@
 			return count;
 		}
    
-       void play(int piece) {
+       /**
+		  * Has the AI play defensively for the given piece.
+		  *
+		  * @param  piece  the piece to play for.
+		  */
+		 void play(int piece) {
          int opp=1;
          if (piece==1) {
             opp=2;
@@ -628,9 +692,9 @@
             board[checkCanWin(opp)[0]][checkCanWin(opp)[1]]=2;
 				//System.out.println("Blocked");
          }
-			else if (blockDoubleForkInAdvanceIfPossible(piece)) {
+			else if (blockDoubleForkInAdvanceIfPossible(piece) && level>1) {
          }
-			else if (blockDoubleForkIfPossible(piece)) {
+			else if (blockDoubleForkIfPossible(piece) && level>1) {
 				System.out.println("Blocked");
          }/*
 			else if (blockForkIfPossible(piece)) {
@@ -654,8 +718,16 @@
    
    
    
-       private class Mouse extends MouseAdapter {
-          public void mousePressed(MouseEvent e) {
+       /**
+		  * Responsible for handling mouse events on the panel.
+		  */
+		 private class Mouse extends MouseAdapter {
+          /**
+			  * Responds to a pressed button and plays at the appropriate place.
+			  *
+			  * @param  e  the fird MouseEvent
+			  */
+			 public void mousePressed(MouseEvent e) {
             //System.out.println(e.getY());
             int x=-1;
             int y=-1;
